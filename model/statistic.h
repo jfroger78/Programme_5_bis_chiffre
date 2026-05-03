@@ -3,6 +3,10 @@
 
 // Standard c++ includes
 #include <array>
+#include <map>
+
+// Qt includes
+#include <QString>
 
 struct StatisticsData
 {
@@ -26,6 +30,18 @@ struct Composition {
 
     std::map<int, int> detailedKeepComposition = {};
     std::map<int, int> detailedRemovedComposition = {};
+
+    std::map<int, int> detailedWinnerRemoved = {};
+    std::map<int, int> detailedAppearRemoved = {};
+    std::map<int, int> detailedCompositionByNumberKeeped = {};
+    std::map<int, int> detailedCompositionByNumberRemoved = {};
+
+    std::map<int, int> detailWinnerWithSameValueFromCurrentRaceRemoved = {};
+    std::map<int, int> detailWinnerWithSameValueAppearFromCurrentRaceRemoved = {};
+
+    std::map<int, int> numberDetailRemoved = {};
+    int totalRemoved = 0;
+    int totalKeeped = 0;
 
     void incrementKeepType(const QString& p_type) {
         incrementType(p_type, keepComposition);

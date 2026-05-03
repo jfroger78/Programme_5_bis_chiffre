@@ -163,28 +163,137 @@ namespace view
     void StatArray::displayComposition(const Composition& p_compositionToDisplay)
     //-------------------------------------------
     {
-        QString keepToDisplay = "Courses gardées: chiffre: " + QString::number(p_compositionToDisplay.number) + ", colonne: " + p_compositionToDisplay.column + " --------------- ";
-        QString removeToDisplay = "Courses non gardées: chiffre: " + QString::number(p_compositionToDisplay.number) + ", colonne: " + p_compositionToDisplay.column + " --------------- ";
+        // Keep datas
+        const QString keepToDisplay = "Chiffre: " + QString::number(p_compositionToDisplay.number) + ", colonne: " + p_compositionToDisplay.column;
+        m_ui->m_compositionKeepInfo->setText(keepToDisplay);
 
+        QString compositionNumbers;
         for(const std::pair<QString, int> datas: p_compositionToDisplay.keepComposition) {
-            keepToDisplay += datas.first + ": " + QString::number(datas.second) + ", ";
+            compositionNumbers += datas.first + ": " + QString::number(datas.second) + ", ";
         }
-        keepToDisplay += " --------------- ";
-        for(const std::pair<int, int> primeComposition: p_compositionToDisplay.detailedKeepComposition) {
-            keepToDisplay += QString::number(primeComposition.first) + ": " + QString::number(primeComposition.second) + ", ";
+        m_ui->m_compositionNumber->setText(compositionNumbers);
+        
+        QString compositionDetails;
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedKeepComposition) {
+            const int number = detailsComposition.first;
+            const float numberTotal = detailsComposition.second;
+            const float totalRace = p_compositionToDisplay.totalKeeped;
+            float percent = 0;
+            if((0 != totalRace) && (0 != numberTotal)) {
+                percent = (numberTotal / totalRace) * 100;
+            }
+            float totalTimeThisNumber = 0;
+            float percent2 = 0;
+            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.detailedCompositionByNumberKeeped.find(number);
+            if(p_compositionToDisplay.detailedCompositionByNumberKeeped.end() != detailedCompositionByNumber) {
+                totalTimeThisNumber = detailedCompositionByNumber->second;
+                percent2 = (numberTotal / totalTimeThisNumber) * 100;
+            }
+            compositionDetails += QString::number(number) + ": " +
+                                  QString::number(numberTotal, 'f', 0) + " / " + 
+                                  QString::number(totalRace, 'f', 0) + " = " +
+                                  QString::number(percent, 'f', 2) + "% (" +
+                                  QString::number(numberTotal) + "/" + 
+                                  QString::number(totalTimeThisNumber) + " = " +
+                                  QString::number(percent2, 'f', 2) + "%), ";
         }
-        keepToDisplay += "!!!\n";
-        for(const std::pair<QString, int> datas: p_compositionToDisplay.removedComposition) {
-            removeToDisplay += datas.first + ": " + QString::number(datas.second) + ", ";
-        }
-        removeToDisplay += " --------------- ";
-        for(const std::pair<int, int> primeComposition: p_compositionToDisplay.detailedRemovedComposition) {
-            removeToDisplay += QString::number(primeComposition.first) + ": " + QString::number(primeComposition.second) + ", ";
-        }
-        removeToDisplay += "!!!";
+        
+        compositionDetails += "!!!";
+        m_ui->m_compositionDetails->setText(compositionDetails);
 
-        const QString finalString = keepToDisplay + removeToDisplay;
-        m_ui->m_composition->setText(finalString);
+        // Removed datas
+        const QString removeToDisplay = "Chiffre: " + QString::number(p_compositionToDisplay.number) + ", colonne: " + p_compositionToDisplay.column;
+        m_ui->m_compositionNoKeepInfos->setText(removeToDisplay);
+
+        QString compositionNoNumbers;
+        for(const std::pair<QString, int> datas: p_compositionToDisplay.removedComposition) {
+            compositionNoNumbers += datas.first + ": " + QString::number(datas.second) + ", ";
+        }
+        m_ui->m_compositionNoNumbers->setText(compositionNoNumbers);
+
+        QString compositionNoDetails;
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedRemovedComposition) {
+            compositionNoDetails += QString::number(detailsComposition.first) + ": " + QString::number(detailsComposition.second) + ", ";
+        }
+        compositionNoDetails += "!!!";
+        m_ui->m_compositionNoDetails->setText(compositionNoDetails);
+
+        QString numberDetailStr = "";
+        
+        for(const std::pair<int, int>& detailsComposition: p_compositionToDisplay.numberDetailRemoved) {
+            const int number = detailsComposition.first;
+            const float numberTotal = detailsComposition.second;
+            const float totalRace = p_compositionToDisplay.totalRemoved;
+            float percent = 0;
+            if((0 != totalRace) && (0 != numberTotal)) {
+                percent = (numberTotal / totalRace) * 100;
+            }
+            float totalTimeThisNumber = 0;
+            float percent2 = 0;
+            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.detailedCompositionByNumberRemoved.find(number);
+            if(p_compositionToDisplay.detailedCompositionByNumberRemoved.end() != detailedCompositionByNumber) {
+                totalTimeThisNumber = detailedCompositionByNumber->second;
+                percent2 = (numberTotal / totalTimeThisNumber) * 100;
+            }
+            numberDetailStr += QString::number(number) + ": " + 
+                               QString::number(numberTotal, 'f', 0) + " / " +
+                               QString::number(totalRace, 'f', 0) + " = " +
+                               QString::number(percent, 'f', 2) + "%, ";
+        }
+        m_ui->m_numberDetailRemoved->setText(numberDetailStr);
+
+        QString removedCompositionDetails;
+        QString comp1;
+        QString comp2;
+        QString comp3;
+        QString comp4;
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedWinnerRemoved) {
+            const int number = detailsComposition.first;
+            const float numberTotal = detailsComposition.second;
+            const float totalRace = p_compositionToDisplay.totalRemoved;
+            float percent0 = 0;
+            if((0 != totalRace) && (0 != numberTotal)) {
+                percent0 = (numberTotal / totalRace) * 100;
+            }
+            const float numberOfTimeWinner = detailsComposition.second;
+            float numberAppearTotal = 0;
+            float percent1 = 0;
+            std::map<int, int>::const_iterator it = p_compositionToDisplay.detailedAppearRemoved.find(number);
+            if(p_compositionToDisplay.detailedAppearRemoved.end() != it) {
+                numberAppearTotal = it->second;
+                percent1 = (numberOfTimeWinner / numberAppearTotal) * 100;
+            }
+            float numberRaceWinnerSameValue = 0;
+            float percent2 = 0;
+            std::map<int, int>::const_iterator it2 = p_compositionToDisplay.detailWinnerWithSameValueFromCurrentRaceRemoved.find(number);
+            if(p_compositionToDisplay.detailWinnerWithSameValueFromCurrentRaceRemoved.end() != it2) {
+                numberRaceWinnerSameValue = it2->second;
+                percent2 = (numberRaceWinnerSameValue / numberTotal) * 100;
+            }
+            float numberRaceNumberAppearSameValue = 0;
+            float percent3 = 0;
+            std::map<int, int>::const_iterator it3 = p_compositionToDisplay.detailWinnerWithSameValueAppearFromCurrentRaceRemoved.find(number);
+            if(p_compositionToDisplay.detailWinnerWithSameValueAppearFromCurrentRaceRemoved.end() != it3) {
+                numberRaceNumberAppearSameValue = it3->second;
+                percent3 = (numberRaceWinnerSameValue / numberRaceNumberAppearSameValue) * 100;
+            }
+
+            comp1 = QString::number(number) + ": " +
+                    QString::number(numberTotal, 'f', 0) + " / " + 
+                    QString::number(totalRace, 'f', 0) + " = " +
+                    QString::number(percent0, 'f', 2) + "%";
+            comp2 = " (" + QString::number(numberOfTimeWinner, 'f', 0) + " / " + 
+                    QString::number(numberAppearTotal, 'f', 0) + " = " +
+                    QString::number(percent1, 'f', 2) + "%, ";
+            comp3 = QString::number(numberRaceWinnerSameValue) + "/" + 
+                    QString::number(numberTotal) + " = " +
+                    QString::number(percent2, 'f', 2) + "%, ";
+            comp4 = QString::number(numberRaceWinnerSameValue) + "/" +
+                    QString::number(numberRaceNumberAppearSameValue) + " = " +
+                    QString::number(percent3, 'f', 2) + "%), ";
+            removedCompositionDetails += comp1 + comp2 + comp3 + comp4;
+        }
+        m_ui->m_removedApparition->setText(removedCompositionDetails);
     }
 
     //-------------------------------------------

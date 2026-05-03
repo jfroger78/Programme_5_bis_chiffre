@@ -605,33 +605,33 @@ namespace controller
             }
 
             if(0 != m_tmpFilteredDatas.size()) {
-                for(const RaceData& data: m_tmpFilteredDatas) {
-                    if(data.isWinnerPassFilter(rowNumber, colIndex)) {
-                        keepRaces.push_back(data.winner);
-                    } else {
-                        removeRaces.push_back(data.winner);
-                    }
-                }
+                computeDetails(
+                    currentComposition,
+                    keepRaces,
+                    removeRaces,
+                    m_tmpFilteredDatas,
+                    rowNumber,
+                    colIndex);
             } else if(!secondTmpFilteredIsEmpty) {
                 std::vector<RaceData> currentColDatas = m_tmpFilteredDatasByColorsByColumn[colIndex];
-                for(const RaceData& data: currentColDatas) {
-                    if(data.isWinnerPassFilter(rowNumber, colIndex)) {
-                        keepRaces.push_back(data.winner);
-                    } else {
-                        removeRaces.push_back(data.winner);
-                    }
-                }
+                computeDetails(
+                    currentComposition,
+                    keepRaces,
+                    removeRaces,
+                    currentColDatas,
+                    rowNumber,
+                    colIndex);
             } else if(0 != m_tmpFilteredDatasByNumbers.size()) {
                 const std::map<int, std::array<std::vector<RaceData>, 24>>::iterator it = m_tmpFilteredDatasByNumbers.find(rowNumber);
                 if(m_tmpFilteredDatasByNumbers.end() != it) {
-                    std::vector<RaceData> datas = it->second[colIndex];
-                    for(const RaceData& data: datas) {
-                        if(data.isWinnerPassFilter(rowNumber, colIndex)) {
-                            keepRaces.push_back(data.winner);
-                        } else {
-                            removeRaces.push_back(data.winner);
-                        }
-                    }
+                    const std::vector<RaceData> datas = it->second[colIndex];
+                    computeDetails(
+                        currentComposition,
+                        keepRaces,
+                        removeRaces,
+                        datas,
+                        rowNumber,
+                        colIndex);
                 }
             }
         }
@@ -682,6 +682,69 @@ namespace controller
         }
 
         m_statArray.displayComposition(currentComposition);
+    }
+
+    //--------------------------------------------------------------------------------
+    void StatArrayController::computeDetails(
+        Composition& p_details,
+        std::vector<int>& p_keepedRaces,
+        std::vector<int>& p_removedRaces,
+        const std::vector<RaceData>& p_datas,
+        const int p_rowNumber,
+        const int p_colIndex)
+    //--------------------------------------------------------------------------------
+    {
+        for(const RaceData& data: p_datas) {
+
+            if(!data.numberInColumn(p_rowNumber, p_colIndex)) {
+                continue;
+            }
+            
+            const std::vector<int> foundedNumbers = data.getNumberCorrespondingToValue(p_rowNumber, p_colIndex);
+            if(!data.isWinnerPassFilter(p_rowNumber, p_colIndex)) {
+                p_details.totalRemoved++;
+                p_details.detailedWinnerRemoved[data.winner]++;
+                for(size_t i = 0; i < m_currentRace->numbers().size(); ++i) {
+                    const int currentHorse = m_currentRace->numbers()[i];
+                    if(currentHorse == data.winner) {
+                        int currentHorseValue = 0;
+                        if(8 > p_colIndex) {
+                            QModelIndex index = m_currentRace->modelEn2()->index(i, p_colIndex);
+                            currentHorseValue = m_currentRace->modelEn2()->data(index).toInt();
+                        } else if((8 <= p_colIndex) && (16 > p_colIndex)) {
+                            QModelIndex index = m_currentRace->modelEn3()->index(i, p_colIndex - 8);
+                            currentHorseValue = m_currentRace->modelEn3()->data(index).toInt();
+                        } else {
+                            QModelIndex index = m_currentRace->modelEn2En3()->index(i, p_colIndex - 16);
+                            currentHorseValue = m_currentRace->modelEn2En3()->data(index).toInt();
+                        }
+                        if(currentHorseValue == data.winnerDatas()[p_colIndex]) {
+                            p_details.detailWinnerWithSameValueFromCurrentRaceRemoved[data.winner]++;
+                        }
+                    }
+                }
+                for(const int number: data.numbers) {
+                    p_details.detailedAppearRemoved[number]++;
+                }
+                p_removedRaces.push_back(data.winner);
+                p_details.numberDetailRemoved[data.winnerDatas()[p_colIndex]]++;
+                
+            } else {
+                p_details.totalKeeped++;
+                p_keepedRaces.push_back(data.winner);
+                for(const int number: foundedNumbers) {
+                    p_details.detailedCompositionByNumberKeeped[number]++;
+                }
+            }
+
+            for(const int foundNumber: foundedNumbers) {
+                for(const int currentHorse: m_currentRace->numbers()) {
+                    if(foundNumber == currentHorse) {
+                        p_details.detailWinnerWithSameValueAppearFromCurrentRaceRemoved[currentHorse]++;
+                    }
+                }
+            }
+        }
     }
 
     //--------------------------------------------------------------------------------

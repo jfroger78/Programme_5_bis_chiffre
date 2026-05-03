@@ -240,6 +240,22 @@ struct RaceData
          */
         const std::map<int, NumberValue> numberOfNumbers() const;
 
+        /**
+         * @brief Gets all number from 8 number which column value corresponding to the input value.
+         * @param p_value The value to find.
+         * @param p_colIndex The index of the column in which search
+         * @return The list of the number find
+         */
+        const std::vector<int> getNumberCorrespondingToValue(const int p_value, const int p_colIndex) const;
+
+        /**
+         * @brief Return the value of the input horse corresponding to the input col index.
+         * @param p_horseNum: The horse number to find.
+         * @param p_colIndex: The column index to check.
+         * @return The value of the horse in the column, or -1.
+         */
+        const int horseDataByColumn(const int p_horseNum, const int p_colIndex);
+
     private:
         /**
          * @brief Converts a color into it's hexa value.
@@ -256,5 +272,7 @@ struct en2En3Array
     std::array<en2En3Struct, 16> en3;
     std::array<en2En3Struct, 16> en2En3;
 };
+
+static const int convertColumnIndexFrom8To16(const int p_colIndex);
 
 #endif // CONSTANTS_H

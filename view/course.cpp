@@ -130,6 +130,19 @@ namespace view {
     }
 
     //---------------------------------------------
+    const bool Course::isFromNumbers(const int p_numberToTest)
+    //---------------------------------------------
+    {
+        for(const int number: numbers()) {
+            if(number == p_numberToTest) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //---------------------------------------------
     void Course::connectIHM()
     //---------------------------------------------
     {

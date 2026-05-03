@@ -244,6 +244,21 @@ namespace controller
                 const std::map<int, std::array<std::vector<RaceData>, 24>>& p_filteredDatas);
 
             const StatisticsData findRowNumbers(const bool p_isArray = false);
+
+            /**
+             * @brief Computes the details of start composition.
+             * @param p_details The compute detail.
+             * @param p_datas The datas to use to get details' composition.
+             * @param p_rowNumber The row number selected by the user.
+             * @param p_colIndex The column index selected by the user.
+             */
+            void computeDetails(
+                Composition& p_details,
+                std::vector<int>& p_keepedRaces,
+                std::vector<int>& p_removedRaces,
+                const std::vector<RaceData>& p_datas,
+                const int p_rowNumber,
+                const int p_colIndex);
         private:
             //-----------------------------
             //          SLOTS

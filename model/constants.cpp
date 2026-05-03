@@ -353,6 +353,41 @@ const std::map<int, NumberValue> RaceData::numberOfNumbers() const
 }
 
 //----------------------------------------------------
+const std::vector<int> RaceData::getNumberCorrespondingToValue(const int p_value, const int p_colIndex) const
+//----------------------------------------------------
+{
+    std::vector<int> findNumbers = {};
+    std::array<std::array<en2En3Struct, 16>, 9> searchingArray;
+    int correctedColIndex;
+    if(8 > p_colIndex)
+    {
+        correctedColIndex = p_colIndex;
+        searchingArray = en2;
+    }
+    else if((8 <= p_colIndex) && (16 > p_colIndex))
+    {
+        correctedColIndex = p_colIndex - 8;
+        searchingArray = en3;
+    }
+    else
+    {
+        correctedColIndex = p_colIndex - 16;
+        searchingArray = en2En3;
+    }
+
+    correctedColIndex = colIndexes[correctedColIndex];
+    for(int rowIndex = 0; rowIndex < 8; ++rowIndex)
+    {
+        if((p_value == searchingArray[rowIndex][correctedColIndex].value))
+        {
+            findNumbers.push_back(numbers[rowIndex]);
+        }
+    }
+
+    return findNumbers;
+}
+
+//----------------------------------------------------
 const QString RaceData::convertColor(const QString& p_color) const
 //----------------------------------------------------
 {
@@ -371,4 +406,48 @@ const QString RaceData::convertColor(const QString& p_color) const
 
     qWarning() << "Unknown color:" << p_color;
     return BLANK_COLOR;
+}
+
+//----------------------------------------------------
+const int RaceData::horseDataByColumn(const int p_horseNum, const int p_colIndex)
+//----------------------------------------------------
+{
+    int horseData = -1;
+    for(size_t index = 0; index < numbers.size(); ++index) {
+        const int currentHorse = numbers[index];
+        if(currentHorse == p_horseNum) {
+            if(8 > p_colIndex) {
+                const int columnIndex = convertColumnIndexFrom8To16(p_colIndex);
+                horseData = en2[index][columnIndex].value;
+            } else if(( 8 <= p_colIndex) && (16 > p_colIndex)) {
+                const int columnIndex = convertColumnIndexFrom8To16(p_colIndex - 8);
+                horseData = en3[index][columnIndex].value;
+            } else {
+                const int columnIndex = convertColumnIndexFrom8To16(p_colIndex - 16);
+                horseData = en2En3[index][columnIndex].value;
+            }
+        }
+    }
+
+    return horseData;
+}
+
+//----------------------------------------------------
+const int convertColumnIndexFrom8To16(const int p_colIndex)
+//----------------------------------------------------
+{
+    switch(p_colIndex) {
+        case 3: // 4 double
+            return 8;
+        case 4: // 4
+            return 9;
+        case 5: // N
+            return 10;
+        case 6: // T
+            return 3; // ou 4
+        case 7: // T
+            return 13; // ou 14
+        default:
+         return p_colIndex;
+    }
 }

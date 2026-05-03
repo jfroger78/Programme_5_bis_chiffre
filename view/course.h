@@ -264,6 +264,13 @@ namespace view {
          */
         const std::map<int, NumberValue> numberOfNumbers();
 
+        /**
+         * @brief Checks if the input number exists into the 8 ones.
+         * @param p_numberToTest: The number to test its existance.
+         * @return True if the number exists, false otherwise
+         */
+        const bool isFromNumbers(const int p_numberToTest);
+
     private:
         /**
          * @brief Connects the user interface elements to their respective slots
