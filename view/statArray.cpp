@@ -168,24 +168,24 @@ namespace view
         m_ui->m_compositionKeepInfo->setText(keepToDisplay);
 
         QString compositionNumbers;
-        for(const std::pair<QString, int> datas: p_compositionToDisplay.keepComposition) {
+        for(const std::pair<QString, int> datas: p_compositionToDisplay.keeped.composition) {
             compositionNumbers += datas.first + ": " + QString::number(datas.second) + ", ";
         }
         m_ui->m_compositionNumber->setText(compositionNumbers);
         
         QString compositionDetails;
-        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedKeepComposition) {
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.keeped.detailedComposition) {
             const int number = detailsComposition.first;
             const float numberTotal = detailsComposition.second;
-            const float totalRace = p_compositionToDisplay.totalKeeped;
+            const float totalRace = p_compositionToDisplay.keeped.total;
             float percent = 0;
             if((0 != totalRace) && (0 != numberTotal)) {
                 percent = (numberTotal / totalRace) * 100;
             }
             float totalTimeThisNumber = 0;
             float percent2 = 0;
-            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.detailedCompositionByNumberKeeped.find(number);
-            if(p_compositionToDisplay.detailedCompositionByNumberKeeped.end() != detailedCompositionByNumber) {
+            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.keeped.detailByNumber.find(number);
+            if(p_compositionToDisplay.keeped.detailByNumber.end() != detailedCompositionByNumber) {
                 totalTimeThisNumber = detailedCompositionByNumber->second;
                 percent2 = (numberTotal / totalTimeThisNumber) * 100;
             }
@@ -206,13 +206,13 @@ namespace view
         m_ui->m_compositionNoKeepInfos->setText(removeToDisplay);
 
         QString compositionNoNumbers;
-        for(const std::pair<QString, int> datas: p_compositionToDisplay.removedComposition) {
+        for(const std::pair<QString, int> datas: p_compositionToDisplay.removed.composition) {
             compositionNoNumbers += datas.first + ": " + QString::number(datas.second) + ", ";
         }
         m_ui->m_compositionNoNumbers->setText(compositionNoNumbers);
 
         QString compositionNoDetails;
-        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedRemovedComposition) {
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.removed.detailedComposition) {
             compositionNoDetails += QString::number(detailsComposition.first) + ": " + QString::number(detailsComposition.second) + ", ";
         }
         compositionNoDetails += "!!!";
@@ -220,20 +220,13 @@ namespace view
 
         QString numberDetailStr = "";
         
-        for(const std::pair<int, int>& detailsComposition: p_compositionToDisplay.numberDetailRemoved) {
+        for(const std::pair<int, int>& detailsComposition: p_compositionToDisplay.removed.numberDetail) {
             const int number = detailsComposition.first;
             const float numberTotal = detailsComposition.second;
-            const float totalRace = p_compositionToDisplay.totalRemoved;
+            const float totalRace = p_compositionToDisplay.removed.total;
             float percent = 0;
             if((0 != totalRace) && (0 != numberTotal)) {
                 percent = (numberTotal / totalRace) * 100;
-            }
-            float totalTimeThisNumber = 0;
-            float percent2 = 0;
-            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.detailedCompositionByNumberRemoved.find(number);
-            if(p_compositionToDisplay.detailedCompositionByNumberRemoved.end() != detailedCompositionByNumber) {
-                totalTimeThisNumber = detailedCompositionByNumber->second;
-                percent2 = (numberTotal / totalTimeThisNumber) * 100;
             }
             numberDetailStr += QString::number(number) + ": " + 
                                QString::number(numberTotal, 'f', 0) + " / " +
@@ -247,10 +240,10 @@ namespace view
         QString comp2;
         QString comp3;
         QString comp4;
-        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.detailedWinnerRemoved) {
+        for(const std::pair<int, int> detailsComposition: p_compositionToDisplay.removed.detailedWinner) {
             const int number = detailsComposition.first;
             const float numberTotal = detailsComposition.second;
-            const float totalRace = p_compositionToDisplay.totalRemoved;
+            const float totalRace = p_compositionToDisplay.removed.total;
             float percent0 = 0;
             if((0 != totalRace) && (0 != numberTotal)) {
                 percent0 = (numberTotal / totalRace) * 100;
@@ -258,22 +251,22 @@ namespace view
             const float numberOfTimeWinner = detailsComposition.second;
             float numberAppearTotal = 0;
             float percent1 = 0;
-            std::map<int, int>::const_iterator it = p_compositionToDisplay.detailedAppearRemoved.find(number);
-            if(p_compositionToDisplay.detailedAppearRemoved.end() != it) {
+            std::map<int, int>::const_iterator it = p_compositionToDisplay.removed.detailAppear.find(number);
+            if(p_compositionToDisplay.removed.detailAppear.end() != it) {
                 numberAppearTotal = it->second;
                 percent1 = (numberOfTimeWinner / numberAppearTotal) * 100;
             }
             float numberRaceWinnerSameValue = 0;
             float percent2 = 0;
-            std::map<int, int>::const_iterator it2 = p_compositionToDisplay.detailWinnerWithSameValueFromCurrentRaceRemoved.find(number);
-            if(p_compositionToDisplay.detailWinnerWithSameValueFromCurrentRaceRemoved.end() != it2) {
+            std::map<int, int>::const_iterator it2 = p_compositionToDisplay.removed.detailWinnerWithSameValueFromCurrentRace.find(number);
+            if(p_compositionToDisplay.removed.detailWinnerWithSameValueFromCurrentRace.end() != it2) {
                 numberRaceWinnerSameValue = it2->second;
                 percent2 = (numberRaceWinnerSameValue / numberTotal) * 100;
             }
             float numberRaceNumberAppearSameValue = 0;
             float percent3 = 0;
-            std::map<int, int>::const_iterator it3 = p_compositionToDisplay.detailWinnerWithSameValueAppearFromCurrentRaceRemoved.find(number);
-            if(p_compositionToDisplay.detailWinnerWithSameValueAppearFromCurrentRaceRemoved.end() != it3) {
+            std::map<int, int>::const_iterator it3 = p_compositionToDisplay.removed.detailWinnerWithSameValueAppearFromCurrentRace.find(number);
+            if(p_compositionToDisplay.removed.detailWinnerWithSameValueAppearFromCurrentRace.end() != it3) {
                 numberRaceNumberAppearSameValue = it3->second;
                 percent3 = (numberRaceWinnerSameValue / numberRaceNumberAppearSameValue) * 100;
             }

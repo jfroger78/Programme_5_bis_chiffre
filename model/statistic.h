@@ -21,34 +21,31 @@ struct StatisticsData
     std::map<int, std::array<int, 24>> totalByColumnByValue = {};
 };
 
+struct Compo {
+    std::map<QString, int> composition = {{"P", 0}, {"3", 0}, {"4", 0}, {"N", 0}};
+    std::map<int, int> detailedComposition = {};
+    std::map<int, int> detailedWinner = {};
+    std::map<int, int> detailAppear = {};
+    std::map<int, int> detailByNumber = {};
+    std::map<int, int> detailWinnerWithSameValueFromCurrentRace = {};
+    std::map<int, int> detailWinnerWithSameValueAppearFromCurrentRace = {};
+    std::map<int, int> numberDetail = {};
+    int total = 0;
+};
+
 struct Composition {
     int number = -1;
     QString column = "";
-    
-    std::map<QString, int> keepComposition = {{"P", 0}, {"3", 0}, {"4", 0}, {"N", 0}};
-    std::map<QString, int> removedComposition = {{"P", 0}, {"3", 0}, {"4", 0}, {"N", 0}};
 
-    std::map<int, int> detailedKeepComposition = {};
-    std::map<int, int> detailedRemovedComposition = {};
-
-    std::map<int, int> detailedWinnerRemoved = {};
-    std::map<int, int> detailedAppearRemoved = {};
-    std::map<int, int> detailedCompositionByNumberKeeped = {};
-    std::map<int, int> detailedCompositionByNumberRemoved = {};
-
-    std::map<int, int> detailWinnerWithSameValueFromCurrentRaceRemoved = {};
-    std::map<int, int> detailWinnerWithSameValueAppearFromCurrentRaceRemoved = {};
-
-    std::map<int, int> numberDetailRemoved = {};
-    int totalRemoved = 0;
-    int totalKeeped = 0;
+    Compo keeped;
+    Compo removed;
 
     void incrementKeepType(const QString& p_type) {
-        incrementType(p_type, keepComposition);
+        incrementType(p_type, keeped.composition);
     }
 
     void incrementRemovedType(const QString& p_type) {
-        incrementType(p_type, removedComposition);
+        incrementType(p_type, removed.composition);
     }
 
     void incrementType(const QString& p_type, std::map<QString, int>& p_mapToIncrement) {

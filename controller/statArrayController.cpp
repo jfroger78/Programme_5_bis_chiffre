@@ -657,7 +657,7 @@ namespace controller
                 currentComposition.incrementKeepType("N");
             }
 
-            currentComposition.detailedKeepComposition[number]++;
+            currentComposition.keeped.detailedComposition[number]++;
         }
         for(const int number: removeRaces) {
 
@@ -678,7 +678,7 @@ namespace controller
             if(!isSometing) {
                 currentComposition.incrementRemovedType("N");
             }
-            currentComposition.detailedRemovedComposition[number]++;
+            currentComposition.removed.detailedComposition[number]++;
         }
 
         m_statArray.displayComposition(currentComposition);
@@ -702,8 +702,8 @@ namespace controller
             
             const std::vector<int> foundedNumbers = data.getNumberCorrespondingToValue(p_rowNumber, p_colIndex);
             if(!data.isWinnerPassFilter(p_rowNumber, p_colIndex)) {
-                p_details.totalRemoved++;
-                p_details.detailedWinnerRemoved[data.winner]++;
+                p_details.removed.total++;
+                p_details.removed.detailedWinner[data.winner]++;
                 for(size_t i = 0; i < m_currentRace->numbers().size(); ++i) {
                     const int currentHorse = m_currentRace->numbers()[i];
                     if(currentHorse == data.winner) {
@@ -719,28 +719,28 @@ namespace controller
                             currentHorseValue = m_currentRace->modelEn2En3()->data(index).toInt();
                         }
                         if(currentHorseValue == data.winnerDatas()[p_colIndex]) {
-                            p_details.detailWinnerWithSameValueFromCurrentRaceRemoved[data.winner]++;
+                            p_details.removed.detailWinnerWithSameValueFromCurrentRace[data.winner]++;
                         }
                     }
                 }
                 for(const int number: data.numbers) {
-                    p_details.detailedAppearRemoved[number]++;
+                    p_details.removed.detailAppear[number]++;
                 }
                 p_removedRaces.push_back(data.winner);
-                p_details.numberDetailRemoved[data.winnerDatas()[p_colIndex]]++;
+                p_details.removed.numberDetail[data.winnerDatas()[p_colIndex]]++;
                 
             } else {
-                p_details.totalKeeped++;
+                p_details.keeped.total++;
                 p_keepedRaces.push_back(data.winner);
                 for(const int number: foundedNumbers) {
-                    p_details.detailedCompositionByNumberKeeped[number]++;
+                    p_details.keeped.detailByNumber[number]++;
                 }
             }
 
             for(const int foundNumber: foundedNumbers) {
                 for(const int currentHorse: m_currentRace->numbers()) {
                     if(foundNumber == currentHorse) {
-                        p_details.detailWinnerWithSameValueAppearFromCurrentRaceRemoved[currentHorse]++;
+                        p_details.removed.detailWinnerWithSameValueAppearFromCurrentRace[currentHorse]++;
                     }
                 }
             }
