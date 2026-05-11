@@ -290,6 +290,26 @@ namespace view
     }
 
     //-------------------------------------------
+    void StatArray::displayRanking(const Rankings& p_rankingDatas)
+    //-------------------------------------------
+    {
+        QStandardItemModel* rankingModel = new QStandardItemModel(m_ui->m_removedRanking);
+        QStringList rowHeaders;
+        int rowIndex = 0;
+        for(const Ranking& removedRanking: p_rankingDatas.datasRemoved) {
+            rowHeaders.push_back(QString::number(removedRanking.verticalHeaderNumber));
+            QStandardItem* percent = new QStandardItem(QString::number(removedRanking.firstPercent, 'f', 2) + "%");
+            rankingModel->setItem(rowIndex, 0, percent);
+            QStandardItem* rank = new QStandardItem(QString::number(removedRanking.firstPercentRanking));
+            rankingModel->setItem(rowIndex++, 1, rank);
+        }
+        rankingModel->setVerticalHeaderLabels(rowHeaders);
+        m_ui->m_removedRanking->setModel(rankingModel);
+        
+
+    }
+
+    //-------------------------------------------
     void StatArray::changeFilterText()
     //-------------------------------------------
     {

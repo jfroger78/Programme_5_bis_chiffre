@@ -682,6 +682,9 @@ namespace controller
         }
 
         m_statArray.displayComposition(currentComposition);
+
+        Rankings rankings;
+        rankingDetails(rankings, p_filterList);
     }
 
     //--------------------------------------------------------------------------------
@@ -702,39 +705,19 @@ namespace controller
             
             const std::vector<int> foundedNumbers = data.getNumberCorrespondingToValue(p_rowNumber, p_colIndex);
             if(!data.isWinnerPassFilter(p_rowNumber, p_colIndex)) {
-                p_details.removed.total++;
-                p_details.removed.detailedWinner[data.winner]++;
-                for(size_t i = 0; i < m_currentRace->numbers().size(); ++i) {
-                    const int currentHorse = m_currentRace->numbers()[i];
-                    if(currentHorse == data.winner) {
-                        int currentHorseValue = 0;
-                        if(8 > p_colIndex) {
-                            QModelIndex index = m_currentRace->modelEn2()->index(i, p_colIndex);
-                            currentHorseValue = m_currentRace->modelEn2()->data(index).toInt();
-                        } else if((8 <= p_colIndex) && (16 > p_colIndex)) {
-                            QModelIndex index = m_currentRace->modelEn3()->index(i, p_colIndex - 8);
-                            currentHorseValue = m_currentRace->modelEn3()->data(index).toInt();
-                        } else {
-                            QModelIndex index = m_currentRace->modelEn2En3()->index(i, p_colIndex - 16);
-                            currentHorseValue = m_currentRace->modelEn2En3()->data(index).toInt();
-                        }
-                        if(currentHorseValue == data.winnerDatas()[p_colIndex]) {
-                            p_details.removed.detailWinnerWithSameValueFromCurrentRace[data.winner]++;
-                        }
-                    }
-                }
-                for(const int number: data.numbers) {
-                    p_details.removed.detailAppear[number]++;
-                }
-                p_removedRaces.push_back(data.winner);
-                p_details.removed.numberDetail[data.winnerDatas()[p_colIndex]]++;
+                compositionRemoved(
+                    p_details,
+                    p_removedRaces,
+                    data,
+                    p_colIndex
+                );
                 
             } else {
-                p_details.keeped.total++;
-                p_keepedRaces.push_back(data.winner);
-                for(const int number: foundedNumbers) {
-                    p_details.keeped.detailByNumber[number]++;
-                }
+                compositionKeeped(
+                    p_details,
+                    p_keepedRaces,
+                    data,
+                    foundedNumbers);
             }
 
             for(const int foundNumber: foundedNumbers) {
@@ -745,6 +728,174 @@ namespace controller
                 }
             }
         }
+    }
+
+    //--------------------------------------------------------------------------------
+    void StatArrayController::compositionKeeped(
+        Composition& p_details,
+        std::vector<int>& p_keepedRaces,
+        const RaceData& p_data,
+        const std::vector<int> p_foundedNumbers)
+    //--------------------------------------------------------------------------------
+    {
+        p_details.keeped.total++;
+        p_keepedRaces.push_back(p_data.winner);
+        for(const int number: p_foundedNumbers) {
+            p_details.keeped.detailByNumber[number]++;
+        }
+    }
+
+    //--------------------------------------------------------------------------------
+    void StatArrayController::compositionRemoved(
+        Composition& p_details,
+        std::vector<int>& p_removedRaces,
+        const RaceData& p_data,
+        const int p_colIndex
+    )
+    //--------------------------------------------------------------------------------
+    {
+        p_details.removed.total++;
+        p_details.removed.detailedWinner[p_data.winner]++;
+        for(size_t i = 0; i < m_currentRace->numbers().size(); ++i) {
+            const int currentHorse = m_currentRace->numbers()[i];
+            if(currentHorse == p_data.winner) {
+                int currentHorseValue = 0;
+                if(8 > p_colIndex) {
+                    QModelIndex index = m_currentRace->modelEn2()->index(i, p_colIndex);
+                    currentHorseValue = m_currentRace->modelEn2()->data(index).toInt();
+                } else if((8 <= p_colIndex) && (16 > p_colIndex)) {
+                    QModelIndex index = m_currentRace->modelEn3()->index(i, p_colIndex - 8);
+                    currentHorseValue = m_currentRace->modelEn3()->data(index).toInt();
+                } else {
+                    QModelIndex index = m_currentRace->modelEn2En3()->index(i, p_colIndex - 16);
+                    currentHorseValue = m_currentRace->modelEn2En3()->data(index).toInt();
+                }
+                if(currentHorseValue == p_data.winnerDatas()[p_colIndex]) {
+                    p_details.removed.detailWinnerWithSameValueFromCurrentRace[p_data.winner]++;
+                }
+            }
+        }
+        for(const int number: p_data.numbers) {
+            p_details.removed.detailAppear[number]++;
+        }
+        p_removedRaces.push_back(p_data.winner);
+        p_details.removed.numberDetail[p_data.winnerDatas()[p_colIndex]]++;
+    }
+
+    //--------------------------------------------------------------------------------
+    void StatArrayController::rankingDetails(Rankings& p_ranking, const QModelIndexList& p_filterList)
+    //--------------------------------------------------------------------------------
+    {
+        bool isSelectedCell = false;
+        std::vector<int> keepRaces = {};
+        std::vector<int> removeRaces = {};
+        Composition currentComposition;
+        for(int rowIndex = 0; rowIndex < statArrayHMI().model()->rowCount(); ++rowIndex) {
+            for(int colIndex = 0; colIndex < statArrayHMI().model()->columnCount(); ++colIndex) {
+                for(const QModelIndex& modelIndex: p_filterList)
+                {
+                    const int filterRowIndex = modelIndex.row();
+                    const int filterColIndex = modelIndex.column();
+                    if((filterRowIndex == rowIndex) && (filterColIndex == colIndex)) {
+                        isSelectedCell = true;
+                        break;
+                    }
+                }
+                if(isSelectedCell) {
+                    isSelectedCell = false;
+                    continue;
+                }
+
+                const int rowNumber = statArrayHMI().model()->headerData(rowIndex, Qt::Vertical).toInt();
+                const QString colHeader = statArrayHMI().model()->headerData(colIndex, Qt::Horizontal).toString();
+                
+                currentComposition.number = rowNumber;
+                if((!colHeader.isEmpty()) && (" " != colHeader)) {
+                    currentComposition.column = colHeader;
+                } else if((2 == colIndex) || (10 == colIndex) || (18 == colIndex)) {
+                    currentComposition.column = "3";
+                } else if((4 == colIndex) || (12 == colIndex) || (20 == colIndex)) {
+                    currentComposition.column = "4";
+                }
+
+                bool secondTmpFilteredIsEmpty = true;
+                for(std::vector<RaceData> datas: m_tmpFilteredDatasByColorsByColumn) {
+                    if(!datas.empty()) {
+                        secondTmpFilteredIsEmpty = false;
+                        break;
+                    }
+                }
+
+                if(0 != m_tmpFilteredDatas.size()) {
+                    computeDetails(
+                        currentComposition,
+                        keepRaces,
+                        removeRaces,
+                        m_tmpFilteredDatas,
+                        rowNumber,
+                        colIndex);
+                } else if(!secondTmpFilteredIsEmpty) {
+                    std::vector<RaceData> currentColDatas = m_tmpFilteredDatasByColorsByColumn[colIndex];
+                    computeDetails(
+                        currentComposition,
+                        keepRaces,
+                        removeRaces,
+                        currentColDatas,
+                        rowNumber,
+                        colIndex);
+                } else if(0 != m_tmpFilteredDatasByNumbers.size()) {
+                    const std::map<int, std::array<std::vector<RaceData>, 24>>::iterator it = m_tmpFilteredDatasByNumbers.find(rowNumber);
+                    if(m_tmpFilteredDatasByNumbers.end() != it) {
+                        const std::vector<RaceData> datas = it->second[colIndex];
+                        computeDetails(
+                            currentComposition,
+                            keepRaces,
+                            removeRaces,
+                            datas,
+                            rowNumber,
+                            colIndex);
+                    }
+                }
+            }
+        }
+
+        std::array<int, 8> values;
+        std::array<int, 8> totals;
+        std::array<float, 8> percents;
+        for(int indexNumber = 0; indexNumber < m_currentRace->numbers().size(); ++indexNumber) {
+            const int number = m_currentRace->numbers()[indexNumber];
+            std::map<int, int>::iterator itValue = currentComposition.removed.detailedWinner.find(number);
+            values[indexNumber] = 0;
+            totals[indexNumber] = 0;
+            percents[indexNumber] = 0.0;
+            if(currentComposition.removed.detailedWinner.end() != itValue){
+                values[indexNumber] = itValue->second;
+                totals[indexNumber] = currentComposition.removed.total;
+                percents[indexNumber] = (float(values[indexNumber]) / float(totals[indexNumber])) * 100;
+            }
+            p_ranking.datasRemoved[indexNumber].verticalHeaderNumber = number;
+            p_ranking.datasRemoved[indexNumber].value = values[indexNumber];
+            p_ranking.datasRemoved[indexNumber].total = totals[indexNumber];
+            p_ranking.datasRemoved[indexNumber].firstPercent = percents[indexNumber];
+        }
+        
+        std::array<float, 8> tmpPercents = percents;
+        std::sort(tmpPercents.begin(), tmpPercents.end(), std::greater<int>());
+        // Remove duplicate values
+        auto last = std::unique(tmpPercents.begin(), tmpPercents.end());
+        // Fill rest with 0 (if needed)
+        std::fill(last, tmpPercents.end(), 0);
+
+        for(int tmpIndex = 0; tmpIndex < tmpPercents.size(); ++tmpIndex) {
+            for(int percentIndex = 0; percentIndex < percents.size(); ++percentIndex) {
+                if(tmpPercents[tmpIndex] == percents[percentIndex]) {
+                    p_ranking.datasRemoved[percentIndex].firstPercentRanking = tmpIndex + 1;
+                }
+            }
+        }
+
+        m_statArray.displayRanking(p_ranking);
+
     }
 
     //--------------------------------------------------------------------------------

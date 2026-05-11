@@ -256,6 +256,13 @@ struct RaceData
          */
         const int horseDataByColumn(const int p_horseNum, const int p_colIndex);
 
+        /**
+         * @brief Check if the input number exist in the race.
+         * @param p_number The number to check.
+         * @return True if the number exist, false otherwise.
+         */
+        const bool isNumberFromEight(const int p_number) const;
+
     private:
         /**
          * @brief Converts a color into it's hexa value.

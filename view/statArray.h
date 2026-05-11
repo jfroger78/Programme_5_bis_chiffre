@@ -109,6 +109,12 @@ namespace view
             void displayComposition(const Composition& p_composition);
 
             /**
+             * @brief Displays ranking of current horses.
+             * @param p_ranking The ranking datas to display.
+             */
+            void displayRanking(const Rankings& p_rankingDatas);
+
+            /**
              * @brief Changes the filter associated text to the other filter.
              */
             void changeFilterText();

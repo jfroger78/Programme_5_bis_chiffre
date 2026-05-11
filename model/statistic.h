@@ -58,4 +58,17 @@ struct Composition {
     }
 };
 
+struct Ranking {
+    int verticalHeaderNumber;
+    float value;
+    float total;
+    float firstPercent;
+    int firstPercentRanking;
+};
+
+struct Rankings {
+    std::array<Ranking, 8> datasRemoved;
+
+};
+
 #endif // STATISTIC_H

@@ -433,6 +433,18 @@ const int RaceData::horseDataByColumn(const int p_horseNum, const int p_colIndex
 }
 
 //----------------------------------------------------
+const bool RaceData::isNumberFromEight(const int p_number) const
+//----------------------------------------------------
+{
+    for(const int& number: numbers) {
+        if(p_number == number) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//----------------------------------------------------
 const int convertColumnIndexFrom8To16(const int p_colIndex)
 //----------------------------------------------------
 {

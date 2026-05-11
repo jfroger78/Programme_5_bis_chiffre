@@ -259,6 +259,34 @@ namespace controller
                 const std::vector<RaceData>& p_datas,
                 const int p_rowNumber,
                 const int p_colIndex);
+
+            /**
+             * @brief Computes the details of start composition for keeped races.
+             * @param p_details The compute detail.
+             * @param p_datas The datas to use to get details' composition.
+             */
+            void compositionKeeped(
+                Composition& p_details,
+                std::vector<int>& p_keepedRaces,
+                const RaceData& p_data,
+                const std::vector<int> p_foundedNumbers);
+
+            /**
+             * @brief Computes the details of start composition for removed races.
+             * @param p_details The compute detail.
+             * @param p_datas The datas to use to get details' composition.
+             * @param p_rowNumber The row number selected by the user.
+             * @param p_colIndex The column index selected by the user.
+             */
+            void compositionRemoved(
+                Composition& p_details,
+                std::vector<int>& p_removedRaces,
+                const RaceData& p_data,
+                const int p_colIndex);
+
+            void rankingDetails(
+                Rankings& p_rankings,
+                const QModelIndexList& p_filterList);
         private:
             //-----------------------------
             //          SLOTS
