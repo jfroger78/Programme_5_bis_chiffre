@@ -298,13 +298,30 @@ namespace view
         int rowIndex = 0;
         for(const Ranking& removedRanking: p_rankingDatas.datasRemoved) {
             rowHeaders.push_back(QString::number(removedRanking.verticalHeaderNumber));
-            QStandardItem* percent = new QStandardItem(QString::number(removedRanking.firstPercent, 'f', 2) + "%");
-            rankingModel->setItem(rowIndex, 0, percent);
-            QStandardItem* rank = new QStandardItem(QString::number(removedRanking.firstPercentRanking));
-            rankingModel->setItem(rowIndex++, 1, rank);
+            
+            QStandardItem* firstPercentItem = new QStandardItem(QString::number(removedRanking.firstPercent, 'f', 2) + "%");
+            rankingModel->setItem(rowIndex, 0, firstPercentItem);
+            QStandardItem* firstRankItem = new QStandardItem(QString::number(removedRanking.firstPercentRanking));
+            rankingModel->setItem(rowIndex, 1, firstRankItem);
+
+            QStandardItem* secondPercentItem = new QStandardItem(QString::number(removedRanking.secondPercent, 'f', 2) + "%");
+            rankingModel->setItem(rowIndex, 2, secondPercentItem);
+            QStandardItem* secondRankItem = new QStandardItem(QString::number(removedRanking.secondPercentRanking));
+            rankingModel->setItem(rowIndex, 3, secondRankItem);
+
+            QStandardItem* thirdPercentItem = new QStandardItem(QString::number(removedRanking.thirdPercent, 'f', 2) + "%");
+            rankingModel->setItem(rowIndex, 4, thirdPercentItem);
+            QStandardItem* thirdRankItem = new QStandardItem(QString::number(removedRanking.thirdPercentRanking));
+            rankingModel->setItem(rowIndex, 5, thirdRankItem);
+
+            QStandardItem* sumRankingItem = new QStandardItem(QString::number(removedRanking.sumRanking()));
+            rankingModel->setItem(rowIndex, 6, sumRankingItem);
+
+            rowIndex++;
         }
         rankingModel->setVerticalHeaderLabels(rowHeaders);
         m_ui->m_removedRanking->setModel(rankingModel);
+        m_ui->m_removedRanking->resizeColumnsToContents();
         
 
     }

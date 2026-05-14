@@ -60,10 +60,25 @@ struct Composition {
 
 struct Ranking {
     int verticalHeaderNumber;
-    float value;
-    float total;
+
+    float firstValue;
+    float firstTotal;
     float firstPercent;
     int firstPercentRanking;
+
+    float secondValue;
+    float secondTotal;
+    float secondPercent;
+    int secondPercentRanking;
+
+    float thirdValue;
+    float thirdTotal;
+    float thirdPercent;
+    int thirdPercentRanking;
+
+    const int sumRanking() const {
+        return (firstPercentRanking + secondPercentRanking + thirdPercentRanking);
+    }
 };
 
 struct Rankings {
