@@ -102,20 +102,6 @@ bool Tools::is4(const uint p_number)
 }
 
 //------------------------------------------------------------------------------
-std::array<uint, 8> Tools::removeDuplicatesAndSortDesc(const std::array<uint, 8>& p_input)
-//------------------------------------------------------------------------------
-{
-    std::array<uint, 8> result = p_input;
-    // Sort in descending order
-    std::sort(result.begin(), result.end(), std::greater<uint>());
-    // Remove duplicate values
-    auto last = std::unique(result.begin(), result.end());
-    // Fill rest with 0 (if needed)
-    std::fill(last, result.end(), 0);
-    return result;
-}
-
-//------------------------------------------------------------------------------
 std::string Tools::convertColorToString(const EColor& p_color)
 //------------------------------------------------------------------------------
 {

@@ -84,6 +84,41 @@ struct Ranking {
 struct Rankings {
     std::array<Ranking, 8> datasRemoved;
 
+    void rankFirstPercent(
+        const std::array<float, 8>& p_datas,
+        std::array<Ranking, 8>& p_datasToRank) {
+        for(int tmpIndex = 0; tmpIndex < p_datas.size(); ++tmpIndex) {
+            for(int percentIndex = 0; percentIndex < p_datas.size(); ++percentIndex) {
+                if(p_datas[tmpIndex] == p_datasToRank[percentIndex].firstPercent) {
+                    p_datasToRank[percentIndex].firstPercentRanking = tmpIndex + 1;
+                }
+            }
+        }
+    }
+
+    void rankSecondPercent(
+        const std::array<float, 8>& p_datas,
+        std::array<Ranking, 8>& p_datasToRank) {
+        for(int tmpIndex = 0; tmpIndex < p_datas.size(); ++tmpIndex) {
+            for(int percentIndex = 0; percentIndex < p_datas.size(); ++percentIndex) {
+                if(p_datas[tmpIndex] == p_datasToRank[percentIndex].secondPercent) {
+                    p_datasToRank[percentIndex].secondPercentRanking = tmpIndex + 1;
+                }
+            }
+        }
+    }
+
+    void rankThirdPercent(
+        const std::array<float, 8>& p_datas,
+        std::array<Ranking, 8>& p_datasToRank) {
+        for(int tmpIndex = 0; tmpIndex < p_datas.size(); ++tmpIndex) {
+            for(int percentIndex = 0; percentIndex < p_datas.size(); ++percentIndex) {
+                if(p_datas[tmpIndex] == p_datasToRank[percentIndex].thirdPercent) {
+                    p_datasToRank[percentIndex].thirdPercentRanking = tmpIndex + 1;
+                }
+            }
+        }
+    }
 };
 
 #endif // STATISTIC_H

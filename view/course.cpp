@@ -465,7 +465,7 @@ namespace view {
         for(int column = 0; column < p_model->columnCount(); ++column)
         {
             valueZeroTreat = false;
-            std::array<uint, 8> columnData = {0, 0, 0, 0, 0, 0, 0};
+            std::array<unsigned int, 8> columnData = {0, 0, 0, 0, 0, 0, 0};
             for(int row = 0; row < p_model->rowCount(); ++row)
             {
                 QStandardItem* item = p_model->item(row, column);
@@ -474,7 +474,7 @@ namespace view {
                     columnData[row] = item->text().toUInt();
                 }
             }
-            columnData = Tools::removeDuplicatesAndSortDesc(columnData);
+            columnData = Tools::removeDuplicatesAndSortDesc<unsigned int>(columnData);
             for(int dataIndex = 0; dataIndex < columnData.size(); ++dataIndex)
             {
                 if((0 == columnData[dataIndex]) && (false == valueZeroTreat))

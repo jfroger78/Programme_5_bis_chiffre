@@ -64,7 +64,18 @@ public:
      * @param p_input: The input array of 8 uint16_t values.
      * @return A new array with duplicates removed and sorted in descending order.
      */
-    static std::array<uint, 8> removeDuplicatesAndSortDesc(const std::array<uint, 8>& p_input);
+    template <typename T>
+    static std::array<T, 8> removeDuplicatesAndSortDesc(const std::array<T, 8>& p_input)
+    {
+        std::array<T, 8> result = p_input;
+        // Sort in descending order
+        std::sort(result.begin(), result.end(), std::greater<T>());
+        // Remove duplicate values
+        auto last = std::unique(result.begin(), result.end());
+        // Fill rest with 0 (if needed)
+        std::fill(last, result.end(), 0);
+        return result;
+    };
 
     /**
      * @brief Converts the color enum value into a string.

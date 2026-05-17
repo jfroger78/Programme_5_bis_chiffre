@@ -921,46 +921,14 @@ namespace controller
             p_ranking.datasRemoved[indexNumber].thirdPercent = thirdPercent[indexNumber];
         }
         
-        std::array<float, 8> tmpFirstPercent = firstPercent;
-        std::sort(tmpFirstPercent.begin(), tmpFirstPercent.end(), std::greater<float>());
-        // Remove duplicate values
-        auto firstLast = std::unique(tmpFirstPercent.begin(), tmpFirstPercent.end());
-        // Fill rest with 0 (if needed)
-        std::fill(firstLast, tmpFirstPercent.end(), 0);
+        firstPercent = Tools::removeDuplicatesAndSortDesc<float>(firstPercent);
+        p_ranking.rankFirstPercent(firstPercent, p_ranking.datasRemoved);
 
-        for(int tmpIndex = 0; tmpIndex < tmpFirstPercent.size(); ++tmpIndex) {
-            for(int percentIndex = 0; percentIndex < firstPercent.size(); ++percentIndex) {
-                if(tmpFirstPercent[tmpIndex] == p_ranking.datasRemoved[percentIndex].firstPercent) {
-                    p_ranking.datasRemoved[percentIndex].firstPercentRanking = tmpIndex + 1;
-                }
-            }
-        }
+        secondPercent = Tools::removeDuplicatesAndSortDesc<float>(secondPercent);
+        p_ranking.rankSecondPercent(secondPercent, p_ranking.datasRemoved);
 
-        std::array<float, 8> tmpSecondPercent = secondPercent;
-        std::sort(tmpSecondPercent.begin(), tmpSecondPercent.end(), std::greater<float>());
-        auto secondLast = std::unique(tmpSecondPercent.begin(), tmpSecondPercent.end());
-        std::fill(secondLast, tmpSecondPercent.end(), 0);
-
-        for(int tmpIndex = 0; tmpIndex < tmpSecondPercent.size(); ++tmpIndex) {
-            for(int percentIndex = 0; percentIndex < secondPercent.size(); ++percentIndex) {
-                if(tmpSecondPercent[tmpIndex] == p_ranking.datasRemoved[percentIndex].secondPercent) {
-                    p_ranking.datasRemoved[percentIndex].secondPercentRanking = tmpIndex + 1;
-                }
-            }
-        }
-
-        std::array<float, 8> tmpThirdPercent = thirdPercent;
-        std::sort(tmpThirdPercent.begin(), tmpThirdPercent.end(), std::greater<float>());
-        auto thirdLast = std::unique(tmpThirdPercent.begin(), tmpThirdPercent.end());
-        std::fill(thirdLast, tmpThirdPercent.end(), 0);
-
-        for(int tmpIndex = 0; tmpIndex < tmpThirdPercent.size(); ++tmpIndex) {
-            for(int percentIndex = 0; percentIndex < thirdPercent.size(); ++percentIndex) {
-                if(tmpThirdPercent[tmpIndex] == p_ranking.datasRemoved[percentIndex].thirdPercent) {
-                    p_ranking.datasRemoved[percentIndex].thirdPercentRanking = tmpIndex + 1;
-                }
-            }
-        }
+        thirdPercent = Tools::removeDuplicatesAndSortDesc<float>(thirdPercent);
+        p_ranking.rankThirdPercent(thirdPercent, p_ranking.datasRemoved);
 
         m_statArray.displayRanking(p_ranking);
     }
