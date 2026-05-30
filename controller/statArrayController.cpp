@@ -858,77 +858,139 @@ namespace controller
                 }
             }
         }
+        for(const int number: keepRaces) {
 
-        int firstValue;
-        int firstTotal;
-        std::array<float, 8> firstPercent;
+            bool isSometing = false;
+            if(Tools::isP(number)) {
+                currentComposition.incrementKeepType("P");
+                isSometing = true;
+            }
 
-        int secondValue;
-        int secondTotal;
-        std::array<float, 8> secondPercent;
+            if(Tools::is3(number)) {
+                currentComposition.incrementKeepType("3");
+                isSometing = true;
+            }
+            if(Tools::is4(number)) {
+                currentComposition.incrementKeepType("4");
+                isSometing = true;
+            }
+            if(!isSometing) {
+                currentComposition.incrementKeepType("N");
+            }
 
-        int thirdValue;
-        int thirdTotal;
-        std::array<float, 8> thirdPercent;
+            currentComposition.keeped.detailedComposition[number]++;
+        }
+
+        float removedFirstValue = 0.0;
+        float removedFirstTotal = 0.0;
+        std::array<float, 8> removedFirstPercent = {0, 0, 0, 0, 0, 0, 0, 0};
+
+        float removedSecondValue = 0.0;
+        float removedSecondTotal = 0.0;
+        std::array<float, 8> removedSecondPercent = {0, 0, 0, 0, 0, 0, 0, 0};
+
+        float removedThirdValue = 0.0;
+        float removedThirdTotal = 0.0;
+        std::array<float, 8> removedThirdPercent = {0, 0, 0, 0, 0, 0, 0, 0};
+
+        float keepedFirstValue = 0.0;
+        float keepedFirstTotal = 0.0;
+        std::array<float, 8> keepedFirstPercent = {0, 0, 0, 0, 0, 0, 0, 0};
+
+        float keepedSecondValue = 0.0;
+        float keepedSecondTotal = 0.0;
+        std::array<float, 8> keepedSecondPercent = {0, 0, 0, 0, 0, 0, 0, 0};
 
         for(int indexNumber = 0; indexNumber < m_currentRace->numbers().size(); ++indexNumber) {
             const int number = m_currentRace->numbers()[indexNumber];
             p_ranking.datasRemoved[indexNumber].verticalHeaderNumber = number;
 
-            std::map<int, int>::iterator itFirstValue = currentComposition.removed.detailedWinner.find(number);
-            std::map<int, int>::iterator itFirstTotal = currentComposition.removed.detailAppear.find(number);
-            firstValue = 0;
-            firstTotal = 0;
-            firstPercent[indexNumber] = 0.0;
-            if((currentComposition.removed.detailedWinner.end() != itFirstValue) && 
-                (currentComposition.removed.detailAppear.end() != itFirstTotal)){
-                firstValue = itFirstValue->second;
-                firstTotal = itFirstTotal->second;
-                firstPercent[indexNumber] = (float(firstValue) / float(firstTotal)) * 100;
+            std::map<int, int>::iterator itRemovedFirstValue = currentComposition.removed.detailedWinner.find(number);
+            std::map<int, int>::iterator itRemovedFirstTotal = currentComposition.removed.detailAppear.find(number);
+            removedFirstValue = 0;
+            removedFirstTotal = 0;
+            removedFirstPercent[indexNumber] = 0.0;
+            if((currentComposition.removed.detailedWinner.end() != itRemovedFirstValue) && 
+                (currentComposition.removed.detailAppear.end() != itRemovedFirstTotal)){
+                removedFirstValue = itRemovedFirstValue->second;
+                removedFirstTotal = itRemovedFirstTotal->second;
+                removedFirstPercent[indexNumber] = (removedFirstValue / removedFirstTotal) * 100;
             }
-            p_ranking.datasRemoved[indexNumber].firstValue = firstValue;
-            p_ranking.datasRemoved[indexNumber].firstTotal = firstTotal;
-            p_ranking.datasRemoved[indexNumber].firstPercent = firstPercent[indexNumber];
+            p_ranking.datasRemoved[indexNumber].firstValue = removedFirstValue;
+            p_ranking.datasRemoved[indexNumber].firstTotal = removedFirstTotal;
+            p_ranking.datasRemoved[indexNumber].firstPercent = removedFirstPercent[indexNumber];
 
-            std::map<int, int>::iterator itSecondValue = currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.find(number);
-            std::map<int, int>::iterator itSecondTotal = currentComposition.removed.detailedWinner.find(number);
-            secondValue = 0;
-            secondTotal = 0;
-            secondPercent[indexNumber] = 0.0;
-            if((currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.end() != itSecondValue) &&
-                (currentComposition.removed.detailedWinner.end() != itSecondTotal)) {
-                secondValue = itSecondValue->second;
-                secondTotal = itSecondTotal->second;
-                secondPercent[indexNumber] = (float(secondValue) / float(secondTotal)) * 100;
+            std::map<int, int>::iterator itRemovedSecondValue = currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.find(number);
+            std::map<int, int>::iterator itRemovedSecondTotal = currentComposition.removed.detailedWinner.find(number);
+            removedSecondValue = 0;
+            removedSecondTotal = 0;
+            removedSecondPercent[indexNumber] = 0.0;
+            if((currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.end() != itRemovedSecondValue) &&
+                (currentComposition.removed.detailedWinner.end() != itRemovedSecondTotal)) {
+                removedSecondValue = itRemovedSecondValue->second;
+                removedSecondTotal = itRemovedSecondTotal->second;
+                removedSecondPercent[indexNumber] = (removedSecondValue / removedSecondTotal) * 100;
             }
-            p_ranking.datasRemoved[indexNumber].secondValue = secondValue;
-            p_ranking.datasRemoved[indexNumber].secondTotal = secondTotal;
-            p_ranking.datasRemoved[indexNumber].secondPercent = secondPercent[indexNumber];
+            p_ranking.datasRemoved[indexNumber].secondValue = removedSecondValue;
+            p_ranking.datasRemoved[indexNumber].secondTotal = removedSecondTotal;
+            p_ranking.datasRemoved[indexNumber].secondPercent = removedSecondPercent[indexNumber];
 
-            std::map<int, int>::iterator itThirdValue = currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.find(number);
-            std::map<int, int>::iterator itThirdTotal = currentComposition.removed.detailWinnerWithSameValueAppearFromCurrentRace.find(number);
-            thirdValue = 0;
-            thirdTotal = 0;
-            thirdPercent[indexNumber] = 0.0;
-            if((currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.end() != itThirdValue) &&
-                (currentComposition.removed.detailWinnerWithSameValueAppearFromCurrentRace.end() != itThirdTotal)) {
-                thirdValue = itThirdValue->second;
-                thirdTotal = itThirdTotal->second;
-                thirdPercent[indexNumber] = (float(thirdValue) / float(thirdTotal)) * 100;
+            std::map<int, int>::iterator itRemovedThirdValue = currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.find(number);
+            std::map<int, int>::iterator itRemovedThirdTotal = currentComposition.removed.detailWinnerWithSameValueAppearFromCurrentRace.find(number);
+            removedThirdValue = 0;
+            removedThirdTotal = 0;
+            removedThirdPercent[indexNumber] = 0.0;
+            if((currentComposition.removed.detailWinnerWithSameValueFromCurrentRace.end() != itRemovedThirdValue) &&
+                (currentComposition.removed.detailWinnerWithSameValueAppearFromCurrentRace.end() != itRemovedThirdTotal)) {
+                removedThirdValue = itRemovedThirdValue->second;
+                removedThirdTotal = itRemovedThirdTotal->second;
+                removedThirdPercent[indexNumber] = (removedThirdValue / removedThirdTotal) * 100;
             }
-            p_ranking.datasRemoved[indexNumber].thirdValue = thirdValue;
-            p_ranking.datasRemoved[indexNumber].thirdTotal = thirdTotal;
-            p_ranking.datasRemoved[indexNumber].thirdPercent = thirdPercent[indexNumber];
+            p_ranking.datasRemoved[indexNumber].thirdValue = removedThirdValue;
+            p_ranking.datasRemoved[indexNumber].thirdTotal = removedThirdTotal;
+            p_ranking.datasRemoved[indexNumber].thirdPercent = removedThirdPercent[indexNumber];
+
+            p_ranking.datasKeeped[indexNumber].verticalHeaderNumber = number;
+            std::map<int, int>::iterator itKeepedFirstValue = currentComposition.keeped.detailedComposition.find(number);
+            int firstTotal = currentComposition.keeped.total;
+            if((currentComposition.keeped.detailedComposition.end() != itKeepedFirstValue) &&
+                (0 != firstTotal)) {
+                keepedFirstValue = itKeepedFirstValue->second;
+                keepedFirstTotal = firstTotal;
+                keepedFirstPercent[indexNumber] = (keepedFirstValue / keepedFirstTotal) * 100;
+            }
+
+            p_ranking.datasKeeped[indexNumber].firstValue = keepedFirstValue;
+            p_ranking.datasKeeped[indexNumber].firstTotal = keepedFirstTotal;
+            p_ranking.datasKeeped[indexNumber].firstPercent = keepedFirstPercent[indexNumber];
+
+            std::map<int, int>::iterator itKeepedSecondTotal = currentComposition.keeped.detailByNumber.find(number);
+            if((currentComposition.keeped.detailedComposition.end() != itKeepedFirstValue) &&
+                (currentComposition.keeped.detailByNumber.end() != itKeepedSecondTotal)) {
+                keepedSecondValue = itKeepedFirstValue->second;
+                keepedSecondTotal = itKeepedSecondTotal->second;
+                keepedSecondPercent[indexNumber] = (keepedSecondValue / keepedSecondTotal) * 100;
+            }
+
+            p_ranking.datasKeeped[indexNumber].secondValue = keepedSecondValue;
+            p_ranking.datasKeeped[indexNumber].secondTotal = keepedSecondTotal;
+            p_ranking.datasKeeped[indexNumber].secondPercent = keepedSecondPercent[indexNumber];
         }
         
-        firstPercent = Tools::removeDuplicatesAndSortDesc<float>(firstPercent);
-        p_ranking.rankFirstPercent(firstPercent, p_ranking.datasRemoved);
+        removedFirstPercent = Tools::removeDuplicatesAndSortDesc<float>(removedFirstPercent);
+        p_ranking.rankFirstPercent(removedFirstPercent, p_ranking.datasRemoved);
 
-        secondPercent = Tools::removeDuplicatesAndSortDesc<float>(secondPercent);
-        p_ranking.rankSecondPercent(secondPercent, p_ranking.datasRemoved);
+        removedSecondPercent = Tools::removeDuplicatesAndSortDesc<float>(removedSecondPercent);
+        p_ranking.rankSecondPercent(removedSecondPercent, p_ranking.datasRemoved);
 
-        thirdPercent = Tools::removeDuplicatesAndSortDesc<float>(thirdPercent);
-        p_ranking.rankThirdPercent(thirdPercent, p_ranking.datasRemoved);
+        removedThirdPercent = Tools::removeDuplicatesAndSortDesc<float>(removedThirdPercent);
+        p_ranking.rankThirdPercent(removedThirdPercent, p_ranking.datasRemoved);
+
+        keepedFirstPercent = Tools::removeDuplicatesAndSortDesc<float>(keepedFirstPercent);
+        p_ranking.rankFirstPercent(keepedFirstPercent, p_ranking.datasKeeped);
+
+        keepedSecondPercent = Tools::removeDuplicatesAndSortDesc<float>(keepedSecondPercent);
+        p_ranking.rankSecondPercent(keepedSecondPercent, p_ranking.datasKeeped);
 
         m_statArray.displayRanking(p_ranking);
     }

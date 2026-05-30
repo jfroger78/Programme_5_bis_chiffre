@@ -293,35 +293,61 @@ namespace view
     void StatArray::displayRanking(const Rankings& p_rankingDatas)
     //-------------------------------------------
     {
-        QStandardItemModel* rankingModel = new QStandardItemModel(m_ui->m_removedRanking);
-        QStringList rowHeaders;
+        QStandardItemModel* removedRankingModel = new QStandardItemModel(m_ui->m_removedRanking);
+        QStringList removedRowHeaders;
         int rowIndex = 0;
         for(const Ranking& removedRanking: p_rankingDatas.datasRemoved) {
-            rowHeaders.push_back(QString::number(removedRanking.verticalHeaderNumber));
+            removedRowHeaders.push_back(QString::number(removedRanking.verticalHeaderNumber));
             
             QStandardItem* firstPercentItem = new QStandardItem(QString::number(removedRanking.firstPercent, 'f', 2) + "%");
-            rankingModel->setItem(rowIndex, 0, firstPercentItem);
+            removedRankingModel->setItem(rowIndex, 0, firstPercentItem);
             QStandardItem* firstRankItem = new QStandardItem(QString::number(removedRanking.firstPercentRanking));
-            rankingModel->setItem(rowIndex, 1, firstRankItem);
+            removedRankingModel->setItem(rowIndex, 1, firstRankItem);
 
             QStandardItem* secondPercentItem = new QStandardItem(QString::number(removedRanking.secondPercent, 'f', 2) + "%");
-            rankingModel->setItem(rowIndex, 2, secondPercentItem);
+            removedRankingModel->setItem(rowIndex, 2, secondPercentItem);
             QStandardItem* secondRankItem = new QStandardItem(QString::number(removedRanking.secondPercentRanking));
-            rankingModel->setItem(rowIndex, 3, secondRankItem);
+            removedRankingModel->setItem(rowIndex, 3, secondRankItem);
 
             QStandardItem* thirdPercentItem = new QStandardItem(QString::number(removedRanking.thirdPercent, 'f', 2) + "%");
-            rankingModel->setItem(rowIndex, 4, thirdPercentItem);
+            removedRankingModel->setItem(rowIndex, 4, thirdPercentItem);
             QStandardItem* thirdRankItem = new QStandardItem(QString::number(removedRanking.thirdPercentRanking));
-            rankingModel->setItem(rowIndex, 5, thirdRankItem);
+            removedRankingModel->setItem(rowIndex, 5, thirdRankItem);
 
             QStandardItem* sumRankingItem = new QStandardItem(QString::number(removedRanking.sumRanking()));
-            rankingModel->setItem(rowIndex, 6, sumRankingItem);
+            removedRankingModel->setItem(rowIndex, 6, sumRankingItem);
 
             rowIndex++;
         }
-        rankingModel->setVerticalHeaderLabels(rowHeaders);
-        m_ui->m_removedRanking->setModel(rankingModel);
+        removedRankingModel->setVerticalHeaderLabels(removedRowHeaders);
+        m_ui->m_removedRanking->setModel(removedRankingModel);
         m_ui->m_removedRanking->resizeColumnsToContents();
+
+        QStandardItemModel* keepedRankingModel = new QStandardItemModel(m_ui->m_keepedRanking);
+        QStringList keepedRowHeaders;
+        rowIndex = 0;
+        for(const Ranking& keepedRanking: p_rankingDatas.datasKeeped) {
+            keepedRowHeaders.push_back(QString::number(keepedRanking.verticalHeaderNumber));
+            
+            QStandardItem* firstPercentItem = new QStandardItem(QString::number(keepedRanking.firstPercent, 'f', 2) + "%");
+            keepedRankingModel->setItem(rowIndex, 0, firstPercentItem);
+            QStandardItem* firstRankItem = new QStandardItem(QString::number(keepedRanking.firstPercentRanking));
+            keepedRankingModel->setItem(rowIndex, 1, firstRankItem);
+
+            QStandardItem* secondPercentItem = new QStandardItem(QString::number(keepedRanking.secondPercent, 'f', 2) + "%");
+            keepedRankingModel->setItem(rowIndex, 2, secondPercentItem);
+            QStandardItem* secondRankItem = new QStandardItem(QString::number(keepedRanking.secondPercentRanking));
+            keepedRankingModel->setItem(rowIndex, 3, secondRankItem);
+
+            QStandardItem* sumRankingItem = new QStandardItem(QString::number(keepedRanking.sumRanking()));
+            keepedRankingModel->setItem(rowIndex, 4, sumRankingItem);
+
+            rowIndex++;
+        }
+
+        keepedRankingModel->setVerticalHeaderLabels(keepedRowHeaders);
+        m_ui->m_keepedRanking->setModel(keepedRankingModel);
+        m_ui->m_keepedRanking->resizeColumnsToContents();
         
 
     }

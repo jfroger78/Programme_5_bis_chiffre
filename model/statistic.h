@@ -61,20 +61,20 @@ struct Composition {
 struct Ranking {
     int verticalHeaderNumber;
 
-    float firstValue;
-    float firstTotal;
-    float firstPercent;
-    int firstPercentRanking;
+    float firstValue = 0.0;
+    float firstTotal = 0.0;
+    float firstPercent = 0.0;
+    int firstPercentRanking = 0;
 
-    float secondValue;
-    float secondTotal;
-    float secondPercent;
-    int secondPercentRanking;
+    float secondValue = 0.0;
+    float secondTotal = 0.0;
+    float secondPercent = 0.0;
+    int secondPercentRanking = 0;
 
-    float thirdValue;
-    float thirdTotal;
-    float thirdPercent;
-    int thirdPercentRanking;
+    float thirdValue = 0.0;
+    float thirdTotal = 0.0;
+    float thirdPercent = 0.0;
+    int thirdPercentRanking = 0;
 
     const int sumRanking() const {
         return (firstPercentRanking + secondPercentRanking + thirdPercentRanking);
@@ -83,6 +83,7 @@ struct Ranking {
 
 struct Rankings {
     std::array<Ranking, 8> datasRemoved;
+    std::array<Ranking, 8> datasKeeped;
 
     void rankFirstPercent(
         const std::array<float, 8>& p_datas,
