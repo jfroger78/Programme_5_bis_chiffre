@@ -704,6 +704,12 @@ namespace controller
             }
             
             const std::vector<int> foundedNumbers = data.getNumberCorrespondingToValue(p_rowNumber, p_colIndex);
+            for(const int number: foundedNumbers) {
+                if(number == data.winner) {
+                    p_details.keeped.detailedWinner[number]++;
+                }
+                p_details.foundedNumber[number]++;
+            }
             if(!data.isWinnerPassFilter(p_rowNumber, p_colIndex)) {
                 compositionRemoved(
                     p_details,

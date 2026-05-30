@@ -40,6 +40,8 @@ struct Composition {
     Compo keeped;
     Compo removed;
 
+    std::map<int, int> foundedNumber = {};
+
     void incrementKeepType(const QString& p_type) {
         incrementType(p_type, keeped.composition);
     }

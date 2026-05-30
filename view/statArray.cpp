@@ -182,19 +182,24 @@ namespace view
             if((0 != totalRace) && (0 != numberTotal)) {
                 percent = (numberTotal / totalRace) * 100;
             }
-            float totalTimeThisNumber = 0;
             float percent2 = 0;
-            std::map<int, int>::const_iterator detailedCompositionByNumber = p_compositionToDisplay.keeped.detailByNumber.find(number);
-            if(p_compositionToDisplay.keeped.detailByNumber.end() != detailedCompositionByNumber) {
-                totalTimeThisNumber = detailedCompositionByNumber->second;
-                percent2 = (numberTotal / totalTimeThisNumber) * 100;
+            float percent2Number = 0.0;
+            if(p_compositionToDisplay.keeped.detailedWinner.end() != p_compositionToDisplay.keeped.detailedWinner.find(number)) {
+                percent2Number = p_compositionToDisplay.keeped.detailedWinner.find(number)->second;
+            }
+            float percent2Total = 0.0;
+            if(p_compositionToDisplay.foundedNumber.end() != p_compositionToDisplay.foundedNumber.find(number)) {
+                percent2Total = p_compositionToDisplay.foundedNumber.find(number)->second;
+            }
+            if((0 != percent2Number) && (0 != percent2Total)) {
+                percent2 = (percent2Number / percent2Total) * 100;
             }
             compositionDetails += QString::number(number) + ": " +
                                   QString::number(numberTotal, 'f', 0) + " / " + 
                                   QString::number(totalRace, 'f', 0) + " = " +
                                   QString::number(percent, 'f', 2) + "% (" +
-                                  QString::number(numberTotal) + "/" + 
-                                  QString::number(totalTimeThisNumber) + " = " +
+                                  QString::number(percent2Number) + "/" + 
+                                  QString::number(percent2Total) + " = " +
                                   QString::number(percent2, 'f', 2) + "%), ";
         }
         
